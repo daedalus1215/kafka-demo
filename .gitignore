@@ -1,0 +1,4 @@
+build/*
+kafka-basics/build/*
+.gradle/*
+.idea/*
