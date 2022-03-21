@@ -5,6 +5,7 @@ import static org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CL
 import static org.apache.kafka.clients.producer.ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG;
 
 import java.util.Properties;
+import java.util.stream.IntStream;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -28,25 +29,28 @@ public class ProducerDemoWithCallback {
     final KafkaProducer<String, String> producer = new KafkaProducer<>(properties);
 
     // create a producer record
-    final ProducerRecord<String, String> producerRecord = new ProducerRecord<>("demo_java", "hello world");
 
-    // send data - async
-    producer.send(producerRecord, new Callback() {
-      @Override
-      public void onCompletion(RecordMetadata metadata, Exception exception) {
-        // executes everytime a record is successfully sent or an exception is thrown
-        if (exception == null) {
-          log.info("Received new metadata \n"
-              .concat("Topic: " + metadata.topic() + "\n")
-              .concat("Partition: " + metadata.partition() + "\n")
-              .concat("Offset: " + metadata.offset() + "\n")
-              .concat("Timestamp: " + metadata.timestamp() + "\n")
-          );
-        } else {
-          log.error("Error while producing " + exception);
-        }
-      }
-    });
+    IntStream.range(0, 10)
+        .forEach(i -> {
+          final ProducerRecord<String, String> producerRecord = new ProducerRecord<>("demo_java", "hello world " + i);
+          producer.send(producerRecord, new Callback() {
+            // send data - async
+            @Override
+            public void onCompletion(RecordMetadata metadata, Exception exception) {
+              // executes everytime a record is successfully sent or an exception is thrown
+              if (exception == null) {
+                log.info("Received new metadata \n"
+                    .concat("Topic: " + metadata.topic() + "\n")
+                    .concat("Partition: " + metadata.partition() + "\n")
+                    .concat("Offset: " + metadata.offset() + "\n")
+                    .concat("Timestamp: " + metadata.timestamp() + "\n")
+                );
+              } else {
+                log.error("Error while producing " + exception);
+              }
+            }
+          });
+        });
 
     // flush data - synch
     producer.flush(); // block up to this line of code, until my producer sends the producer record.
