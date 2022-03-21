@@ -46,6 +46,7 @@ public class ConsumerDemo {
     consumer.subscribe(Collections.singletonList("demo_java"));
     // poll for new data
     while (true) {
+      log.info("Polling");
       final ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100)); // will wait 100 milliseconds for records when polling.
       records.forEach(record -> {
         log.info("key: " + record.key() + ", Value: " + record.value());

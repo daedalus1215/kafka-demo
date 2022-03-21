@@ -2,3 +2,4 @@ build/*
 kafka-basics/build/*
 .gradle/*
 .idea/*
+kafka-basics/out/*
