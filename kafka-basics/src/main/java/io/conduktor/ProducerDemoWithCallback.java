@@ -32,7 +32,10 @@ public class ProducerDemoWithCallback {
 
     IntStream.range(0, 10)
         .forEach(i -> {
-          final ProducerRecord<String, String> producerRecord = new ProducerRecord<>("demo_java", "hello world " + i);
+          final String topic = "demo_java";
+          final String value = "hello world " + i;
+          final String key = "id " + i;
+          final ProducerRecord<String, String> producerRecord = new ProducerRecord<>(topic, key, value);
           producer.send(producerRecord, new Callback() {
             // send data - async
             @Override
@@ -41,6 +44,7 @@ public class ProducerDemoWithCallback {
               if (exception == null) {
                 log.info("Received new metadata \n"
                     .concat("Topic: " + metadata.topic() + "\n")
+                    .concat("Key: " + producerRecord.key() + "\n")
                     .concat("Partition: " + metadata.partition() + "\n")
                     .concat("Offset: " + metadata.offset() + "\n")
                     .concat("Timestamp: " + metadata.timestamp() + "\n")
@@ -50,12 +54,11 @@ public class ProducerDemoWithCallback {
               }
             }
           });
-
-          try {
-            Thread.sleep(1000);
-          } catch (InterruptedException e) {
-            e.printStackTrace();
-          }
+//          try {
+//            Thread.sleep(1000);
+//          } catch (InterruptedException e) {
+//            e.printStackTrace();
+//          }
         });
 
     // flush data - sync
