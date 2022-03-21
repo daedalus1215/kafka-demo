@@ -50,9 +50,15 @@ public class ProducerDemoWithCallback {
               }
             }
           });
+
+          try {
+            Thread.sleep(1000);
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
         });
 
-    // flush data - synch
+    // flush data - sync
     producer.flush(); // block up to this line of code, until my producer sends the producer record.
     producer.close(); // This actually invokes producer.flush(). So the call above is redundant. Demo purposes.
 
