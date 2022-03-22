@@ -4,21 +4,23 @@ import static org.apache.kafka.clients.consumer.ConsumerConfig.AUTO_OFFSET_RESET
 import static org.apache.kafka.clients.consumer.ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.GROUP_ID_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG;
+import static org.apache.kafka.clients.consumer.ConsumerConfig.PARTITION_ASSIGNMENT_STRATEGY_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG;
 
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.CooperativeStickyAssignor;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.errors.WakeupException;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ConsumerDemoWithShutdown {
+public class ConsumerDemoCooperative {
 
-  private static final Logger log = LoggerFactory.getLogger(ConsumerDemoWithShutdown.class);
+  private static final Logger log = LoggerFactory.getLogger(ConsumerDemoCooperative.class);
   /**
    * If no other offsets are found, don't even start
    */
@@ -41,6 +43,8 @@ public class ConsumerDemoWithShutdown {
     properties.setProperty(VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
     properties.setProperty(GROUP_ID_CONFIG, "my-second-app");
     properties.setProperty(AUTO_OFFSET_RESET_CONFIG, OFFSET_EARLIEST);
+    properties.setProperty(PARTITION_ASSIGNMENT_STRATEGY_CONFIG, CooperativeStickyAssignor.class.getName());
+
     // create consumer
     final KafkaConsumer<String, String> consumer = new KafkaConsumer<>(properties);
     // get a reference to the currentr thread
