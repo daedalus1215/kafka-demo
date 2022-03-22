@@ -4,3 +4,4 @@ kafka-basics/build/*
 .idea/*
 kafka-basics/out/*
 kafka-producer-wikimedia/build/*
+kafka-producer-wikimedia/out/*
