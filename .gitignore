@@ -3,3 +3,4 @@ kafka-basics/build/*
 .gradle/*
 .idea/*
 kafka-basics/out/*
+kafka-producer-wikimedia/build/*
